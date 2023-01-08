@@ -28,6 +28,10 @@ class Contacts {
   getContact = async () => {
     return await this.db.find();
   };
+  getOneContact = async (email) => {
+    console.log("CONTACT:", email);
+    return await this.db.find({ email });
+  };
   createUser = async (userData) => {
     return await this.db.create(userData);
   };

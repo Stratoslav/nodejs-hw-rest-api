@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
 const Users = require("./contacts");
+const authRouter = require("./auth/auth.router");
 
 const startServer = async () => {
   //CONNECTION TO M
@@ -13,7 +14,7 @@ const startServer = async () => {
     "mongodb+srv://stratoslav:qwertyasdfg123@start.mker2iq.mongodb.net/nnn?w=majority"
   );
 
-  console.log("Data base has been conected");
+  console.log("Data base has been connected");
   const contactsRouter = require("./router/ContactsRouter");
   const PORT = process.env.PORT || 3000;
   const pathToLogs = path.resolve(__dirname, "errors.logs.json");
@@ -29,6 +30,7 @@ const startServer = async () => {
   });
 
   app.use("/", contactsRouter);
+  app.use("/auth", authRouter);
 
   app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
 };

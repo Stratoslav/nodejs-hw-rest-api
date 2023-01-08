@@ -70,6 +70,17 @@ const favoriteContactsController = async (req, res, next) => {
     next(e);
   }
 };
+const findContactsController = async (req, res, next) => {
+  try {
+    const { email } = req.params;
+    const contact = await userDB.getOneContact(email);
+    console.log(email);
+    res.json(contact);
+    res.end();
+  } catch (e) {
+    console.log(e);
+  }
+};
 module.exports = {
   getContactsController,
   createContactsController,
@@ -77,4 +88,5 @@ module.exports = {
   removeContactController,
   favoriteContactsController,
   getAllFavoriteContacts,
+  findContactsController,
 };

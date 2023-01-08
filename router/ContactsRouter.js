@@ -6,11 +6,13 @@ const {
   removeContactController,
   favoriteContactsController,
   getAllFavoriteContacts,
+  findContactsController,
 } = require("../contacts/contacts.controller");
 
 const contactsRouter = Router();
 
 contactsRouter.get("/contacts", getContactsController);
+contactsRouter.get("/contacts/:email", findContactsController);
 contactsRouter.get("/contacts/favorite", getAllFavoriteContacts);
 contactsRouter.post("/contacts", createContactsController);
 contactsRouter.patch("/contacts/:id", updateContactController);
