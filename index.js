@@ -1,25 +1,22 @@
 const dotenv = require("dotenv");
 dotenv.config();
+
 const express = require("express");
-const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
-const Users = require("./contacts");
 const authRouter = require("./auth/auth.router");
 
 const startServer = async () => {
-  //CONNECTION TO M
   mongoose.set("strictQuery", true);
   await mongoose.connect(
-    "mongodb+srv://stratoslav:qwertyasdfg123@start.mker2iq.mongodb.net/nnn?w=majority"
+    `mongodb+srv://${process.env.NAME_MONGO_DB}:${process.env.PASSWORD_MONGO_DB}.mongodb.net/nnn?w=majority`
   );
 
   console.log("Data base has been connected");
   const contactsRouter = require("./router/ContactsRouter");
-  const PORT = process.env.PORT || 3000;
-  const pathToLogs = path.resolve(__dirname, "errors.logs.json");
+  const PORT = Number(process.env.PORT) || 3000;
   const app = express();
-  console.log(pathToLogs);
+
   app.use(express.json());
 
   app.use((req, res, next) => {

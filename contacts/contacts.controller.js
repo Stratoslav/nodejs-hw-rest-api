@@ -1,4 +1,3 @@
-const { json } = require("express");
 const userDB = require("./contacts.model");
 
 const getContactsController = async (req, res, next) => {
@@ -10,12 +9,11 @@ const getContactsController = async (req, res, next) => {
   }
 };
 
-const getAllFavoriteContacts = async (req, res, next) => {
+const getFavoriteOrNotContactsController = async (req, res, next) => {
   try {
-    const { favorite } = req.params;
-    const contacts = await userDB.getContact();
-    console.log(contacts);
-    contacts.filter((c) => (c.favorite === true ? res.json(c) : null));
+    const { boolean } = req.params;
+    const contacts = await userDB.getFavoriteOrNoContact(JSON.parse(boolean));
+    res.status(200).json(contacts);
   } catch (e) {
     next(e);
   }
@@ -27,7 +25,6 @@ const createContactsController = async (req, res, next) => {
     if (body.favorite === null || undefined) {
       body.favorite === false;
     }
-    console.log(body.favorite);
     const newContact = await userDB.createUser(body);
     res.status(201).json(newContact);
   } catch (e) {
@@ -56,7 +53,7 @@ const removeContactController = async (req, res, next) => {
   }
 };
 
-const favoriteContactsController = async (req, res, next) => {
+const rewriteFavoriteContactsController = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { ...body } = req.body;
@@ -74,7 +71,7 @@ const findContactsController = async (req, res, next) => {
   try {
     const { email } = req.params;
     const contact = await userDB.getOneContact(email);
-    console.log(email);
+
     res.json(contact);
     res.end();
   } catch (e) {
@@ -86,7 +83,7 @@ module.exports = {
   createContactsController,
   updateContactController,
   removeContactController,
-  favoriteContactsController,
-  getAllFavoriteContacts,
+  rewriteFavoriteContactsController,
+  getFavoriteOrNotContactsController,
   findContactsController,
 };

@@ -29,7 +29,6 @@ class Contacts {
     return await this.db.find();
   };
   getOneContact = async (email) => {
-    console.log("CONTACT:", email);
     return await this.db.find({ email });
   };
   createUser = async (userData) => {
@@ -41,8 +40,8 @@ class Contacts {
   deleteContact = async (id) => {
     return await this.db.findByIdAndRemove(id);
   };
-  getFavoriteContact = async (favorite) => {
-    return await this.db.find(favorite);
+  getFavoriteOrNoContact = async (favorite) => {
+    return await this.db.find({ favorite });
   };
   favoriteContacts = async (contactId, body) => {
     return await this.db.findByIdAndUpdate(contactId, body, { new: true });
