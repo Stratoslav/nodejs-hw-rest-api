@@ -1,33 +1,34 @@
 const Contacts = require("../contacts/contacts.model");
 const bcrypt = require("bcrypt");
-const { nextTick } = require("process");
-const saltRounds = 10;
+const { createVerifiationToken } = require("../services/token.services");
 const registrationController = async (req, res, next) => {
   try {
     const { body } = req;
-    const hashedPassword = await bcrypt.hash(body._id, +saltRounds);
-    await Contacts.createContactsController({
-      ...body,
-      password: hashedPassword,
-    });
+
+    const hashedPassword = await bcrypt.hash(body.password, +process.env.SALT);
+    await Contacts.createUser({ ...body, password: hashedPassword });
+    console.log(hashedPassword);
     res.status(201).send("Created");
   } catch (e) {
     next(e);
   }
 };
-
 const loginController = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    const user = await Contacts.getOneContact(email);
-    if (!user) {
-      return res.status(400).send(`User with email ${email} not found`);
+    const email = req.body.email;
+    const password = req.body.password;
+    const contact = await Contacts.getOneContact({ email });
+    if (!contact) {
+      res.status(404).send(`Contact with email ${email} not found`);
     }
-    const isPasswordEqual = await bcrypt.compare(password, user.password);
+    const isPasswordEqual = bcrypt.compare(password, contact.password);
     if (!isPasswordEqual) {
-      return res.status(404).send("Wrong password");
+      res.status(404).send("Wrong Password");
     }
-    res.json({ email: user.email, name: user.name, phone: user.phone });
+    const token = await createVerifiationToken({ id: contact._id });
+    res.json({
+      access_token: token,
+    });
   } catch (e) {
     next(e);
   }
